@@ -1,5 +1,7 @@
 # Fluid Glass 设计系统
 
+[English](README.en.md) | **简体中文**
+
 一套面向整站网页与组件的 Apple 风格设计规范，基于 WWDC《Designing Fluid Interfaces》等设计演讲提炼的规则构建，落地为 Web 技术（CSS 自定义属性、Pointer Events、rAF 弹簧）。
 
 > 界面之所以「活」，是因为运动从当前屏上值出发、继承用户的手速、向前投射动量，并且随时可以被抓住和反转。

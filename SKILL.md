@@ -1,6 +1,6 @@
 ---
 name: fluid-glass-design
-description: 使用 Fluid Glass 设计系统为整站网页与组件生成 Apple 风格界面。包含明暗双主题 design token、五档毛玻璃材质、按字号配字距的排版刻度、spring 流体动效参数与可中断手势物理，以及三档无障碍降级。做新页面、新组件或改造现有 UI 为该风格时使用。
+description: 使用 Fluid Glass 设计系统为整站网页与组件生成 Apple 风格界面。包含明暗双主题 design token、五档毛玻璃材质、按字号配字距的排版刻度、spring 流体动效参数与可中断手势物理，以及三档无障碍降级。做新页面、新组件或改造现有 UI 为该风格时使用。 | Apple-style Fluid Glass design system for whole-site web UI - light/dark design tokens, five-tier frosted-glass materials (backdrop-filter), size-specific type tracking, spring motion presets with interruptible gesture physics, and built-in accessibility fallbacks. Use when building or restyling pages/components in this aesthetic.
 user-invocable: true
 ---
 
