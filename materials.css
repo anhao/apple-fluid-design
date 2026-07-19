@@ -1,0 +1,180 @@
+/*
+ * Fluid Glass 设计系统 — 材质层（毛玻璃）
+ * 依赖 tokens.css。
+ *
+ * 规则：
+ *   1. 材质是「浮动的功能层」：导航/工具栏/弹层用材质，内容从下面滚过；不要做不透明色条。
+ *   2. 厚度编码层级：面积越大、越结构化的面，材质越厚（blur 更强 + 阴影更深）。
+ *   3. 禁止两层浅材质直接叠放 —— 可读性会崩。叠放时上层必须用 thick/chrome 或实底。
+ *   4. 材质面上的文字用 vibrancy 类（更高对比、稍重字重），彩色内容放实底层。
+ *   5. 玻璃面的出入场用 .materialize：blur 与 scale 一起动画，读作「材质到场」而非淡入。
+ *   6. 悬浮 UI 与内容交界处用 .scroll-edge 渐隐，不用 1px 硬分割线。
+ */
+
+/* ── 五档材质 ─────────────────────────────────────────────── */
+
+.material-ultrathin,
+.material-thin,
+.material-regular,
+.material-thick,
+.material-chrome {
+  border: 1px solid var(--material-border);
+  /* 顶部亮边 = 光打在材质上缘 */
+  box-shadow: inset 0 1px 0 0 var(--material-edge), var(--shadow-glass);
+}
+
+.material-ultrathin {
+  background: var(--material-ultrathin-bg);
+  -webkit-backdrop-filter: blur(var(--material-ultrathin-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-ultrathin-blur)) saturate(var(--material-saturate));
+}
+
+.material-thin {
+  background: var(--material-thin-bg);
+  -webkit-backdrop-filter: blur(var(--material-thin-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-thin-blur)) saturate(var(--material-saturate));
+}
+
+.material-regular {
+  background: var(--material-regular-bg);
+  -webkit-backdrop-filter: blur(var(--material-regular-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-regular-blur)) saturate(var(--material-saturate));
+}
+
+.material-thick {
+  background: var(--material-thick-bg);
+  -webkit-backdrop-filter: blur(var(--material-thick-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-thick-blur)) saturate(var(--material-saturate));
+  box-shadow: inset 0 1px 0 0 var(--material-edge), var(--shadow-glass-lg);
+}
+
+/* 导航栏/工具栏专用：无边框圆角，靠 scroll-edge 与内容分界 */
+.material-chrome {
+  background: var(--material-chrome-bg);
+  -webkit-backdrop-filter: blur(var(--material-chrome-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-chrome-blur)) saturate(var(--material-saturate));
+  border: 0;
+  box-shadow: none;
+}
+
+/* ── Vibrancy：材质面上的文字 ─────────────────────────────── */
+/* 不要用扁平灰；用更高对比 + 稍重字重 + 微加字距 */
+
+.vibrancy-primary {
+  color: var(--label-primary);
+}
+.vibrancy-secondary {
+  color: var(--label-secondary);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.vibrancy-tertiary {
+  color: var(--label-tertiary);
+  font-weight: 500;
+}
+
+/* ── 滚动边缘渐隐（代替硬分割线）───────────────────────────── */
+/* 用在 sticky/fixed 的 chrome 上；页面滚动后由 JS 加 .is-scrolled */
+
+.scroll-edge {
+  position: relative;
+}
+.scroll-edge::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  height: 12px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.07), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+.scroll-edge.is-scrolled::after {
+  opacity: 1;
+}
+.dark .scroll-edge::after {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.35), transparent);
+}
+
+/* ── 遮罩（模态专用；并行面板不加遮罩以保持心流）──────────── */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-out);
+  z-index: 40;
+}
+.scrim.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Materialize：玻璃面的到场/离场 ───────────────────────── */
+/* blur 与 scale 一起动画；离场用镜像缓动，保证来路与归路对称 */
+
+.materialize-in {
+  animation: fg-materialize-in var(--duration-base) var(--ease-out) both;
+}
+.materialize-out {
+  animation: fg-materialize-out var(--duration-fast) var(--ease-in) both;
+}
+@keyframes fg-materialize-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+    -webkit-backdrop-filter: blur(0) saturate(100%);
+    backdrop-filter: blur(0) saturate(100%);
+  }
+}
+@keyframes fg-materialize-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+    -webkit-backdrop-filter: blur(0) saturate(100%);
+    backdrop-filter: blur(0) saturate(100%);
+  }
+}
+
+/* ── 降级 ─────────────────────────────────────────────────── */
+
+/* 不支持 backdrop-filter：退化为近实底 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .material-ultrathin,
+  .material-thin,
+  .material-regular,
+  .material-thick,
+  .material-chrome {
+    background: color-mix(in srgb, var(--background) 92%, transparent);
+  }
+}
+
+/* 用户要求降低透明度：材质变实底、去模糊 */
+@media (prefers-reduced-transparency: reduce) {
+  .material-ultrathin,
+  .material-thin,
+  .material-regular,
+  .material-thick,
+  .material-chrome {
+    background: var(--background);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* 高对比：近实底 + 明确的对比边框 */
+@media (prefers-contrast: more) {
+  .material-ultrathin,
+  .material-thin,
+  .material-regular,
+  .material-thick,
+  .material-chrome {
+    background: var(--background);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 1px solid currentColor;
+  }
+}

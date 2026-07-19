@@ -1,0 +1,9 @@
+{
+  "id": "apple-fluid",
+  "design_library_id": "apple-fluid",
+  "name": "Fluid Glass",
+  "version": 1,
+  "source": "apple-design skill (WWDC Designing Fluid Interfaces) + HIG system colors",
+  "themes": ["light", "dark"],
+  "features": ["glass-materials", "spring-motion", "gesture-physics", "a11y-fallbacks"]
+}

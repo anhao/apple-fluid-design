@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluid Glass — 组件预览</title>
+<link rel="stylesheet" href="../tokens.css">
+<link rel="stylesheet" href="../materials.css">
+<link rel="stylesheet" href="../components.css">
+<style>
+  body { padding: 88px calc(var(--spacing) * 8) calc(var(--spacing) * 16); }
+  .section { max-width: 880px; margin: 0 auto calc(var(--spacing) * 12); }
+  .section > h2 { margin: 0 0 calc(var(--spacing) * 1); }
+  .section > p { margin: 0 0 calc(var(--spacing) * 5); color: var(--muted-foreground); }
+  .row {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: calc(var(--spacing) * 3); margin-bottom: calc(var(--spacing) * 4);
+  }
+  .row-label {
+    min-width: 84px; font: 600 0.6875rem/1 var(--font-mono);
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--label-tertiary);
+  }
+  /* 彩色画布：专门用来展示毛玻璃 */
+  .glass-stage {
+    position: relative; overflow: hidden; border-radius: var(--radius-xl);
+    padding: calc(var(--spacing) * 8);
+    display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 5); align-items: flex-start;
+    background:
+      radial-gradient(420px 260px at 12% 20%, #5ac8fa 0%, transparent 62%),
+      radial-gradient(460px 300px at 85% 15%, #af52de 0%, transparent 60%),
+      radial-gradient(520px 340px at 55% 95%, #ff9500 0%, transparent 58%),
+      linear-gradient(160deg, #0a3a67, #1c1c3e);
+  }
+  .glass-stage .card-glass { max-width: 300px; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: calc(var(--spacing) * 3); }
+  .swatch { border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; }
+  .swatch-chip { height: 56px; }
+  .swatch-name { padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3); font: 500 0.75rem/1.3 var(--font-mono); }
+  .type-specimen > * { margin: 0 0 calc(var(--spacing) * 3); display: block; }
+</style>
+</head>
+<body>
+
+<nav class="navbar material-chrome scroll-edge" id="navbar">
+  <a class="navbar-brand" href="#">Fluid Glass</a>
+  <div class="navbar-rail">
+    <a class="navbar-link is-active" href="#">组件</a>
+    <a class="navbar-link" href="../ui_kits/website/index.html">完整示例</a>
+    <button class="btn btn-sm btn-glass" id="theme-toggle" type="button">深色模式</button>
+  </div>
+</nav>
+
+<section class="section">
+  <h2 class="text-title-1">材质 · 毛玻璃</h2>
+  <p class="text-callout">五档厚度压在彩色画布上；面积越大材质越厚。两层浅材质禁止叠放。</p>
+  <div class="glass-stage">
+    <div class="card card-glass">
+      <span class="text-eyebrow vibrancy-tertiary">material-regular</span>
+      <h3 class="text-title-3 vibrancy-primary" style="margin:8px 0 6px">玻璃卡片</h3>
+      <p class="text-callout vibrancy-secondary" style="margin:0">
+        文字用 vibrancy 层级：更高对比、稍重字重，而不是扁平灰。
+      </p>
+    </div>
+    <div class="material-thin" style="border-radius:var(--radius-lg);padding:16px 20px">
+      <span class="text-footnote vibrancy-secondary">material-thin</span>
+    </div>
+    <div class="material-thick" style="border-radius:var(--radius-lg);padding:16px 20px">
+      <span class="text-footnote vibrancy-secondary">material-thick</span>
+    </div>
+    <button class="btn btn-glass" type="button">玻璃按钮</button>
+    <div class="field field-glass" style="min-width:220px">
+      <span class="field-icon">⌕</span>
+      <input aria-label="搜索" placeholder="压在图像上的输入框">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="text-title-1">排版</h2>
+  <p class="text-callout">字号越大字距越紧；层级 = 字重 + 字号 + 行高成组变化。</p>
+  <div class="card type-specimen">
+    <span class="text-display">Display −0.022em</span>
+    <span class="text-title-1">Title 1 −0.019em</span>
+    <span class="text-title-3">Title 3 −0.010em</span>
+    <span class="text-headline">Headline −0.004em</span>
+    <span class="text-body">Body 0 — 正文字距归零，行高 1.5，随用户字号缩放。</span>
+    <span class="text-footnote text-secondary">Footnote +0.006em，小字微正字距保可读性。</span>
+    <span class="text-eyebrow">Eyebrow +0.08em uppercase</span>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="text-title-1">按钮</h2>
+  <p class="text-callout">按下瞬间缩放（scale 0.97），不等松手；一屏至多一个 filled。</p>
+  <div class="card">
+    <div class="row">
+      <span class="row-label">层级</span>
+      <button class="btn btn-filled" type="button">主要操作</button>
+      <button class="btn btn-tinted" type="button">次要操作</button>
+      <button class="btn btn-plain" type="button">文本操作 ›</button>
+      <button class="btn btn-destructive" type="button">删除</button>
+    </div>
+    <div class="row">
+      <span class="row-label">尺寸</span>
+      <button class="btn btn-filled btn-lg" type="button">大 52</button>
+      <button class="btn btn-filled" type="button">中 44</button>
+      <button class="btn btn-tinted btn-sm" type="button">小 32</button>
+      <button class="btn btn-icon btn-tinted" type="button" aria-label="添加">＋</button>
+    </div>
+    <div class="row">
+      <span class="row-label">禁用</span>
+      <button class="btn btn-filled" type="button" disabled>主要操作</button>
+      <button class="btn btn-tinted" type="button" disabled>次要操作</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="text-title-1">表单</h2>
+  <p class="text-callout">聚焦即时反馈；行内校验，不等提交。</p>
+  <div class="card">
+    <div class="row">
+      <span class="row-label">输入框</span>
+      <div class="field" style="min-width:240px">
+        <span class="field-icon">⌕</span>
+        <input aria-label="搜索模型" placeholder="搜索模型">
+      </div>
+      <div class="field is-invalid" style="min-width:240px">
+        <input aria-label="邮箱" value="not-an-email">
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">开关</span>
+      <input class="switch" type="checkbox" checked aria-label="启用流式输出">
+      <input class="switch" type="checkbox" aria-label="启用日志">
+      <input class="switch" type="checkbox" disabled aria-label="禁用项">
+    </div>
+    <div class="row">
+      <span class="row-label">分段</span>
+      <div class="segmented" role="radiogroup" aria-label="时间范围">
+        <label><input type="radio" name="range" checked><span>天</span></label>
+        <label><input type="radio" name="range"><span>周</span></label>
+        <label><input type="radio" name="range"><span>月</span></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="text-title-1">列表与徽标</h2>
+  <p class="text-callout">分隔用发丝线；徽标为半透明胶囊。</p>
+  <div class="row" style="align-items:flex-start">
+    <div class="list-inset" style="flex:1;min-width:280px">
+      <button class="list-row" type="button">
+        <span class="list-row-label">API 密钥</span>
+        <span class="list-row-value">3 个</span>
+        <span class="list-row-chevron">›</span>
+      </button>
+      <button class="list-row" type="button">
+        <span class="list-row-label">用量统计</span>
+        <span class="badge badge-success">正常</span>
+        <span class="list-row-chevron">›</span>
+      </button>
+      <div class="list-row">
+        <span class="list-row-label">流式输出</span>
+        <input class="switch" type="checkbox" checked aria-label="流式输出">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge">默认</span>
+      <span class="badge badge-success">成功</span>
+      <span class="badge badge-warning">警告</span>
+      <span class="badge badge-error">错误</span>
+      <span class="badge badge-neutral">中性</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="text-title-1">Popover</h2>
+  <p class="text-callout">从触发它的元素生长（transform-origin 锚定），materialize 到场。</p>
+  <div class="card" style="position:relative;min-height:220px">
+    <button class="btn btn-tinted" id="popover-trigger" type="button">打开菜单</button>
+    <div class="popover" id="popover" hidden style="top:64px;left:24px;--popover-origin:top left">
+      <button class="popover-item" type="button">复制密钥</button>
+      <button class="popover-item" type="button">重置额度</button>
+      <div class="popover-separator"></div>
+      <button class="popover-item is-destructive" type="button">删除</button>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="text-title-1">语义色</h2>
+  <div class="swatches" id="swatches"></div>
+</section>
+
+<script src="../motion.js"></script>
+<script>
+(function () {
+  var root = document.documentElement;
+
+  // 跟随系统主题，可手动切换
+  if (matchMedia("(prefers-color-scheme: dark)").matches) root.classList.add("dark");
+  var toggle = document.getElementById("theme-toggle");
+  function syncToggle() {
+    toggle.textContent = root.classList.contains("dark") ? "浅色模式" : "深色模式";
+  }
+  syncToggle();
+  toggle.addEventListener("click", function () {
+    root.classList.toggle("dark");
+    syncToggle();
+  });
+
+  // 滚动边缘渐隐
+  var navbar = document.getElementById("navbar");
+  addEventListener("scroll", function () {
+    navbar.classList.toggle("is-scrolled", scrollY > 4);
+  }, { passive: true });
+
+  // Popover：materialize 进出，路径对称
+  var trigger = document.getElementById("popover-trigger");
+  var popover = document.getElementById("popover");
+  trigger.addEventListener("click", function () {
+    if (popover.hidden) {
+      popover.hidden = false;
+      popover.classList.remove("materialize-out");
+      popover.classList.add("materialize-in");
+    } else {
+      popover.classList.remove("materialize-in");
+      popover.classList.add("materialize-out");
+      popover.addEventListener("animationend", function onEnd() {
+        popover.hidden = true;
+        popover.removeEventListener("animationend", onEnd);
+      });
+    }
+  });
+
+  // 语义色票
+  var roles = ["background", "foreground", "card", "primary", "secondary", "muted",
+    "accent", "destructive", "success", "warning", "border", "separator", "fill", "scrim"];
+  var wrap = document.getElementById("swatches");
+  roles.forEach(function (r) {
+    var d = document.createElement("div");
+    d.className = "swatch";
+    d.innerHTML = '<div class="swatch-chip" style="background:var(--' + r + ')"></div>' +
+      '<div class="swatch-name">--' + r + "</div>";
+    wrap.appendChild(d);
+  });
+})();
+</script>
+</body>
+</html>

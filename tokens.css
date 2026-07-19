@@ -1,0 +1,294 @@
+/*
+ * Fluid Glass 设计系统 — Design Tokens
+ * 灵感来源：Apple Human Interface Guidelines + WWDC《Designing Fluid Interfaces》
+ *
+ * 架构（两层）：
+ *   1. 原始色板（primitive）—— gray 阶梯、系统强调色（light/dark 成对）、label 半透明文本色
+ *   2. 语义 token（semantic）—— :root（light）与 .dark 把角色映射到原始色板
+ *      组件与页面只允许消费语义 token，禁止直接引用原始色板。
+ *
+ * 本文件还定义：排版刻度（字号越大字距越紧）、间距、圆角、阴影、
+ * 材质 token（毛玻璃，见 materials.css 的消费方式）、动效 token（spring 参数 + 时长带 + 缓动）。
+ *
+ * 无障碍：文件尾部包含 prefers-reduced-motion / prefers-contrast 的全局降级。
+ * prefers-reduced-transparency 的材质降级在 materials.css。
+ */
+
+:root {
+  /* ===== 原始色板 ===== */
+
+  /* gray（iOS 系统灰阶） */
+  --gray-25: #fbfbfd;
+  --gray-50: #f5f5f7;
+  --gray-100: #e8e8ed;
+  --gray-200: #d2d2d7;
+  --gray-300: #aeaeb2;
+  --gray-400: #8e8e93;
+  --gray-500: #6e6e73;
+  --gray-600: #48484a;
+  --gray-700: #3a3a3c;
+  --gray-800: #2c2c2e;
+  --gray-850: #1c1c1e;
+  --gray-900: #161617;
+  --gray-950: #000000;
+
+  /* 系统强调色（light 值；dark 变体在 .dark 中覆盖语义层） */
+  --sys-blue: #007aff;
+  --sys-green: #34c759;
+  --sys-red: #ff3b30;
+  --sys-orange: #ff9500;
+  --sys-yellow: #ffcc00;
+  --sys-teal: #30b0c7;
+  --sys-indigo: #5856d6;
+  --sys-purple: #af52de;
+  --sys-pink: #ff2d55;
+
+  /* label（半透明文本，压在材质上仍保持层级） */
+  --label-primary: #1d1d1f;
+  --label-secondary: rgba(60, 60, 67, 0.62);
+  --label-tertiary: rgba(60, 60, 67, 0.36);
+  --label-quaternary: rgba(60, 60, 67, 0.18);
+
+  /* ===== 语义角色（light）===== */
+
+  --background: #ffffff;
+  --background-subtle: var(--gray-50);
+  --foreground: var(--label-primary);
+  --card: #ffffff;
+  --card-foreground: var(--label-primary);
+  --popover: #ffffff;
+  --popover-foreground: var(--label-primary);
+
+  --primary: var(--sys-blue);
+  --primary-foreground: #ffffff;
+  --secondary: var(--gray-100);
+  --secondary-foreground: var(--label-primary);
+  --muted: var(--gray-100);
+  --muted-foreground: var(--label-secondary);
+  --accent: var(--gray-50);
+  --accent-foreground: var(--label-primary);
+
+  --destructive: var(--sys-red);
+  --destructive-foreground: #ffffff;
+  --success: var(--sys-green);
+  --success-foreground: #ffffff;
+  --warning: var(--sys-orange);
+  --warning-foreground: #ffffff;
+
+  --border: var(--gray-200);
+  --separator: rgba(60, 60, 67, 0.16);
+  --input: var(--gray-200);
+  --ring: var(--sys-blue);
+  --scrim: rgba(0, 0, 0, 0.32);
+
+  --fill: rgba(120, 120, 128, 0.20);        /* 控件底色（开关轨道、分段控件槽） */
+  --fill-subtle: rgba(120, 120, 128, 0.12); /* 输入框、次级填充 */
+
+  /* ===== 材质（毛玻璃）=====
+   * 五档厚度：面积越大、层级越结构化，材质越厚。
+   * 消费方式见 materials.css（.material-*），禁止两层浅材质直接叠放。
+   */
+  --material-saturate: 180%;
+  --material-ultrathin-bg: rgba(255, 255, 255, 0.40);
+  --material-ultrathin-blur: 12px;
+  --material-thin-bg: rgba(255, 255, 255, 0.55);
+  --material-thin-blur: 16px;
+  --material-regular-bg: rgba(255, 255, 255, 0.68);
+  --material-regular-blur: 22px;
+  --material-thick-bg: rgba(255, 255, 255, 0.80);
+  --material-thick-blur: 30px;
+  --material-chrome-bg: rgba(252, 252, 254, 0.82); /* 导航栏/工具栏专用 */
+  --material-chrome-blur: 20px;
+  --material-border: rgba(255, 255, 255, 0.45);
+  --material-edge: rgba(255, 255, 255, 0.55);      /* 顶部亮边 = 材质受光 */
+
+  /* ===== 排版 =====
+   * 默认系统字体（自带光学字号与字距表）；mono 仅用于代码与数据。
+   * 字距规则：字号越大字距越紧（display 负字距），正文归零，小字微正。
+   */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "PingFang SC", "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* ===== 间距 / 圆角 =====
+   * 间距基于 rem：跟随用户字号设置缩放（Dynamic Type 思路）。
+   * 实用刻度 = calc(var(--spacing) * n)，n ∈ 1,2,3,4,6,8,12,16,24,32
+   */
+  --spacing: 0.25rem;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-capsule: 999px;
+  --radius: var(--radius-lg);
+
+  /* 控件高度（44px 为最小触控目标） */
+  --control-sm: 32px;
+  --control-md: 44px;
+  --control-lg: 52px;
+
+  /* ===== 阴影 =====
+   * 静息态耳语级；层级优先靠 1px 边与材质厚度表达。
+   * 大面积玻璃面用 shadow-glass-*（更深，读作“更厚”）。
+   */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px -1px rgba(0, 0, 0, 0.05), 0 6px 14px -4px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 4px 8px -3px rgba(0, 0, 0, 0.06), 0 12px 28px -8px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 8px 16px -6px rgba(0, 0, 0, 0.08), 0 20px 44px -10px rgba(0, 0, 0, 0.14);
+  --shadow-glass: 0 1px 1px rgba(0, 0, 0, 0.04), 0 8px 24px -8px rgba(0, 0, 0, 0.10);
+  --shadow-glass-lg: 0 2px 2px rgba(0, 0, 0, 0.05), 0 20px 48px -12px rgba(0, 0, 0, 0.18);
+
+  /* ===== 动效 =====
+   * spring 参数取自 Apple 的 damping（阻尼比）/ response（响应，秒）模型。
+   * damping 1.0 = 临界阻尼（默认，无回弹）；只有手势带动量时才用 0.8。
+   * motion.js 直接读取这些 token；CSS 过渡用下面的时长带 + 缓动做退化实现。
+   */
+  --spring-default-damping: 1;
+  --spring-default-response: 0.4;
+  --spring-snappy-damping: 1;
+  --spring-snappy-response: 0.3;
+  --spring-bouncy-damping: 0.8;   /* 仅限 flick / 拖拽释放等有动量的交互 */
+  --spring-bouncy-response: 0.4;
+  --spring-sheet-damping: 0.8;
+  --spring-sheet-response: 0.3;
+
+  --duration-instant: 100ms; /* 按下反馈 */
+  --duration-fast: 200ms;    /* 悬停、颜色 */
+  --duration-base: 300ms;    /* 常规位移、弹层 */
+  --duration-slow: 450ms;    /* 大面积转场 */
+
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);   /* --ease-out 的镜像，出入路径对称 */
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+
+  --press-scale: 0.97; /* 按下缩放，全站统一 */
+}
+
+/* ===== 语义角色（dark）===== */
+.dark {
+  --label-primary: #f5f5f7;
+  --label-secondary: rgba(235, 235, 245, 0.64);
+  --label-tertiary: rgba(235, 235, 245, 0.38);
+  --label-quaternary: rgba(235, 235, 245, 0.20);
+
+  --background: var(--gray-950);
+  --background-subtle: var(--gray-900);
+  --foreground: var(--label-primary);
+  --card: var(--gray-850);
+  --card-foreground: var(--label-primary);
+  --popover: var(--gray-800);
+  --popover-foreground: var(--label-primary);
+
+  --primary: #0a84ff;
+  --primary-foreground: #ffffff;
+  --secondary: var(--gray-800);
+  --secondary-foreground: var(--label-primary);
+  --muted: var(--gray-800);
+  --muted-foreground: var(--label-secondary);
+  --accent: var(--gray-800);
+  --accent-foreground: var(--label-primary);
+
+  --destructive: #ff453a;
+  --success: #30d158;
+  --warning: #ff9f0a;
+
+  --border: var(--gray-700);
+  --separator: rgba(235, 235, 245, 0.14);
+  --input: var(--gray-700);
+  --ring: #0a84ff;
+  --scrim: rgba(0, 0, 0, 0.48);
+
+  --fill: rgba(120, 120, 128, 0.36);
+  --fill-subtle: rgba(120, 120, 128, 0.24);
+
+  --material-ultrathin-bg: rgba(28, 28, 30, 0.42);
+  --material-thin-bg: rgba(28, 28, 30, 0.55);
+  --material-regular-bg: rgba(28, 28, 30, 0.68);
+  --material-thick-bg: rgba(28, 28, 30, 0.82);
+  --material-chrome-bg: rgba(22, 22, 24, 0.84);
+  --material-border: rgba(255, 255, 255, 0.10);
+  --material-edge: rgba(255, 255, 255, 0.12);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.32), 0 2px 6px -2px rgba(0, 0, 0, 0.32);
+  --shadow-md: 0 2px 4px -1px rgba(0, 0, 0, 0.36), 0 6px 14px -4px rgba(0, 0, 0, 0.36);
+  --shadow-lg: 0 4px 8px -3px rgba(0, 0, 0, 0.40), 0 12px 28px -8px rgba(0, 0, 0, 0.44);
+  --shadow-xl: 0 8px 16px -6px rgba(0, 0, 0, 0.44), 0 20px 44px -10px rgba(0, 0, 0, 0.52);
+  --shadow-glass: 0 1px 1px rgba(0, 0, 0, 0.20), 0 8px 24px -8px rgba(0, 0, 0, 0.40);
+  --shadow-glass-lg: 0 2px 2px rgba(0, 0, 0, 0.24), 0 20px 48px -12px rgba(0, 0, 0, 0.55);
+}
+
+/* ===== 基础排版 ===== */
+html {
+  font: 100%/1.5 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 24%, transparent);
+}
+
+/* 排版刻度：weight + size + 行高 + 字距成组使用，不允许单独换字距 */
+.text-display-xl {
+  font: 700 clamp(2.75rem, 4vw + 1.5rem, 4.5rem) / 1.03 var(--font-sans);
+  letter-spacing: -0.025em;
+}
+.text-display {
+  font: 700 clamp(2rem, 2.5vw + 1.25rem, 3rem) / 1.08 var(--font-sans);
+  letter-spacing: -0.022em;
+}
+.text-title-1 { font: 600 1.75rem/1.15 var(--font-sans); letter-spacing: -0.019em; }
+.text-title-2 { font: 600 1.375rem/1.2 var(--font-sans); letter-spacing: -0.014em; }
+.text-title-3 { font: 600 1.1875rem/1.25 var(--font-sans); letter-spacing: -0.010em; }
+.text-headline { font: 600 1rem/1.4 var(--font-sans); letter-spacing: -0.004em; }
+.text-body { font: 400 1rem/1.5 var(--font-sans); letter-spacing: 0; }
+.text-callout { font: 400 0.9375rem/1.45 var(--font-sans); letter-spacing: 0; }
+.text-footnote { font: 400 0.8125rem/1.4 var(--font-sans); letter-spacing: 0.006em; }
+.text-caption { font: 500 0.75rem/1.35 var(--font-sans); letter-spacing: 0.010em; }
+.text-eyebrow {
+  font: 600 0.75rem/1.2 var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.text-mono { font-family: var(--font-mono); font-size: 0.875em; }
+.text-nums { font-variant-numeric: tabular-nums; }
+
+.text-secondary { color: var(--label-secondary); }
+.text-tertiary { color: var(--label-tertiary); }
+
+/* ===== 无障碍全局降级 ===== */
+
+/* 减弱动态：取消位移/缩放/弹簧类动效，保留短促的透明度与颜色过渡（反馈不消失）。
+ * JS 驱动的动效必须经 FluidMotion.prefersReducedMotion() 判断后改用淡入淡出。 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --press-scale: 1; /* 取消按下缩放，按压反馈退化为颜色变化 */
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 高对比：边界改为实线可见 */
+@media (prefers-contrast: more) {
+  :root,
+  .dark {
+    --border: currentColor;
+    --separator: currentColor;
+  }
+}

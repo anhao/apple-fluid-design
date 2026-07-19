@@ -1,0 +1,470 @@
+/*
+ * Fluid Glass 设计系统 — 组件层
+ * 依赖 tokens.css + materials.css。
+ *
+ * 通用行为约定：
+ *   - 反馈在按下瞬间发生（:active），不等松手；按下过渡用 --duration-instant。
+ *   - 所有可聚焦控件必须有 :focus-visible ring。
+ *   - 悬停/颜色过渡 --duration-fast；位移类 --duration-base + --ease-out。
+ *   - 手势驱动的运动（sheet 拖拽等）不用 CSS transition，由 motion.js 的 spring 驱动。
+ *   - 最小触控目标 44×44px。
+ */
+
+/* ── Button ───────────────────────────────────────────────── */
+/* 胶囊形；层级：filled > tinted > glass > plain。一屏至多一个 filled。 */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 2);
+  height: var(--control-md);
+  padding: 0 calc(var(--spacing) * 5);
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: transparent;
+  color: var(--foreground);
+  font: 600 0.9375rem/1 var(--font-sans);
+  letter-spacing: -0.002em;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    filter var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+/* 按下：即时缩放（回弹靠上面的 fast 过渡自然放开） */
+.btn:active {
+  transform: scale(var(--press-scale));
+  transition-duration: var(--duration-instant);
+}
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+
+.btn-filled {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.btn-filled:hover { filter: brightness(0.95); }
+
+.btn-tinted {
+  background: color-mix(in srgb, var(--primary) 13%, transparent);
+  color: var(--primary);
+}
+.btn-tinted:hover {
+  background: color-mix(in srgb, var(--primary) 19%, transparent);
+}
+
+.btn-glass {
+  background: var(--material-thin-bg);
+  -webkit-backdrop-filter: blur(var(--material-thin-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-thin-blur)) saturate(var(--material-saturate));
+  border: 1px solid var(--material-border);
+  box-shadow: inset 0 1px 0 0 var(--material-edge), var(--shadow-xs);
+}
+.btn-glass:hover { background: var(--material-regular-bg); }
+
+.btn-plain {
+  color: var(--primary);
+  padding: 0 calc(var(--spacing) * 2);
+}
+.btn-plain:hover {
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.btn-destructive {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+.btn-destructive:hover { filter: brightness(0.95); }
+
+.btn-sm { height: var(--control-sm); padding: 0 calc(var(--spacing) * 3.5); font-size: 0.8125rem; }
+.btn-lg { height: var(--control-lg); padding: 0 calc(var(--spacing) * 7); font-size: 1.0625rem; }
+.btn-icon { width: var(--control-md); padding: 0; }
+.btn-icon.btn-sm { width: var(--control-sm); }
+
+/* ── Field（输入框）───────────────────────────────────────── */
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+  height: var(--control-md);
+  padding: 0 calc(var(--spacing) * 3.5);
+  background: var(--fill-subtle);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+.field:focus-within {
+  background: var(--background);
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--ring) 22%, transparent);
+}
+.field.is-invalid {
+  border-color: var(--destructive);
+}
+.field.is-invalid:focus-within {
+  box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--destructive) 22%, transparent);
+}
+.field.is-disabled { opacity: 0.5; pointer-events: none; }
+
+.field > input,
+.field > textarea {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: 400 0.9375rem/1.4 var(--font-sans);
+}
+.field > input::placeholder,
+.field > textarea::placeholder {
+  color: var(--label-tertiary);
+}
+.field-icon {
+  color: var(--label-secondary);
+  flex: 0 0 auto;
+  display: inline-flex;
+}
+
+/* 压在图片/彩色背景上的输入框 */
+.field-glass {
+  background: var(--material-thin-bg);
+  -webkit-backdrop-filter: blur(var(--material-thin-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-thin-blur)) saturate(var(--material-saturate));
+  border: 1px solid var(--material-border);
+}
+
+/* 行内校验信息：即时反馈，不等提交 */
+.field-hint {
+  margin-top: calc(var(--spacing) * 1.5);
+  font: 400 0.8125rem/1.4 var(--font-sans);
+  color: var(--muted-foreground);
+}
+.field-hint.is-error { color: var(--destructive); }
+
+/* ── Switch（开关）────────────────────────────────────────── */
+/* 点按无动量 → 临界阻尼，无回弹；按住时滑块拉长（iOS 细节） */
+
+.switch {
+  appearance: none;
+  position: relative;
+  width: 51px;
+  height: 31px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-capsule);
+  background: var(--fill);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: background-color var(--duration-base) var(--ease-out);
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: var(--radius-capsule);
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), 0 3px 8px rgba(0, 0, 0, 0.12);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    width var(--duration-fast) var(--ease-out);
+}
+.switch:active::after { width: 32px; }
+.switch:checked { background: var(--success); }
+.switch:checked::after { transform: translateX(20px); }
+.switch:checked:active::after { transform: translateX(15px); }
+.switch:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.switch:disabled { opacity: 0.4; cursor: default; }
+
+/* ── Segmented（分段控件）─────────────────────────────────── */
+
+.segmented {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  padding: 2px;
+  background: var(--fill-subtle);
+  border-radius: var(--radius-sm);
+}
+.segmented label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 0 calc(var(--spacing) * 3.5);
+  border-radius: calc(var(--radius-sm) - 2px);
+  font: 500 0.8125rem/1 var(--font-sans);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+.segmented label:active { transform: scale(var(--press-scale)); }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented label:has(input:checked) {
+  background: var(--card);
+  color: var(--foreground);
+  font-weight: 600;
+  box-shadow: var(--shadow-xs);
+}
+.segmented label:has(input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+/* ── Card ─────────────────────────────────────────────────── */
+
+.card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: calc(var(--spacing) * 6);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
+}
+.card-interactive { cursor: pointer; }
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.card-interactive:active {
+  transform: scale(0.99);
+  transition-duration: var(--duration-instant);
+}
+
+/* 玻璃卡片：压在彩色/图像背景上使用；不要与另一层浅材质叠放 */
+.card-glass {
+  background: var(--material-regular-bg);
+  -webkit-backdrop-filter: blur(var(--material-regular-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-regular-blur)) saturate(var(--material-saturate));
+  border: 1px solid var(--material-border);
+  box-shadow: inset 0 1px 0 0 var(--material-edge), var(--shadow-glass);
+}
+
+/* ── Navbar（毛玻璃导航）──────────────────────────────────── */
+/* 固定顶栏，内容从下面滚过；配合 .material-chrome + .scroll-edge 使用 */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  height: 52px;
+  padding: 0 max(calc(var(--spacing) * 5), env(safe-area-inset-left));
+}
+.navbar-brand {
+  font: 700 1rem/1 var(--font-sans);
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  text-decoration: none;
+}
+.navbar-rail {
+  display: flex;
+  gap: calc(var(--spacing) * 1);
+  margin-left: auto;
+}
+.navbar-link {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 calc(var(--spacing) * 3);
+  border-radius: var(--radius-capsule);
+  font: 500 0.875rem/1 var(--font-sans);
+  color: var(--label-secondary);
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+.navbar-link:hover {
+  background: var(--fill-subtle);
+  color: var(--foreground);
+}
+.navbar-link.is-active { color: var(--foreground); font-weight: 600; }
+.navbar-link:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* ── Sheet（底部面板）─────────────────────────────────────── */
+/* transform 由 motion.js spring 驱动（1:1 跟手、投射、可中断），CSS 不写位移过渡 */
+
+.sheet {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--material-thick-bg);
+  -webkit-backdrop-filter: blur(var(--material-thick-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-thick-blur)) saturate(var(--material-saturate));
+  border: 1px solid var(--material-border);
+  border-bottom: 0;
+  box-shadow: inset 0 1px 0 0 var(--material-edge), var(--shadow-glass-lg);
+  padding-bottom: env(safe-area-inset-bottom);
+  transform: translateY(100%);
+  will-change: transform;
+  touch-action: none;
+}
+.sheet-grabber {
+  width: 36px;
+  height: 5px;
+  margin: calc(var(--spacing) * 2) auto;
+  border-radius: var(--radius-capsule);
+  background: var(--label-quaternary);
+}
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 6) calc(var(--spacing) * 3);
+}
+.sheet-body {
+  flex: 1;
+  min-height: 0; /* 允许 flex 子项收缩，滚动才能生效 */
+  padding: 0 calc(var(--spacing) * 6) calc(var(--spacing) * 6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* 主要操作固定在面板底部，不随内容滚走 */
+.sheet-footer {
+  display: flex;
+  gap: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 3) calc(var(--spacing) * 6) calc(var(--spacing) * 4);
+  border-top: 1px solid var(--separator);
+}
+
+/* ── Popover / Menu ───────────────────────────────────────── */
+/* 必须从触发它的元素生长：JS 设置 --popover-origin 为触发点方位 */
+
+.popover {
+  position: absolute;
+  z-index: 45;
+  min-width: 200px;
+  padding: calc(var(--spacing) * 1.5);
+  border-radius: var(--radius-lg);
+  background: var(--material-thick-bg);
+  -webkit-backdrop-filter: blur(var(--material-thick-blur)) saturate(var(--material-saturate));
+  backdrop-filter: blur(var(--material-thick-blur)) saturate(var(--material-saturate));
+  border: 1px solid var(--material-border);
+  box-shadow: inset 0 1px 0 0 var(--material-edge), var(--shadow-xl);
+  transform-origin: var(--popover-origin, top);
+}
+.popover-item {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+  width: 100%;
+  min-height: 38px;
+  padding: 0 calc(var(--spacing) * 3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--popover-foreground);
+  font: 400 0.9375rem/1 var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--duration-instant) var(--ease-out);
+}
+.popover-item:hover { background: var(--fill-subtle); }
+.popover-item:active { background: var(--fill); }
+.popover-item.is-destructive { color: var(--destructive); }
+.popover-separator {
+  height: 1px;
+  margin: calc(var(--spacing) * 1.5) calc(var(--spacing) * 2);
+  background: var(--separator);
+}
+
+/* ── List（成组列表）──────────────────────────────────────── */
+
+.list-inset {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  min-height: 48px;
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
+}
+.list-row + .list-row {
+  border-top: 1px solid var(--separator);
+}
+.list-row-label { flex: 1; font: 400 0.9375rem/1.4 var(--font-sans); }
+.list-row-value { color: var(--muted-foreground); font: 400 0.9375rem/1.4 var(--font-sans); }
+.list-row-chevron { color: var(--label-tertiary); }
+a.list-row,
+button.list-row {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration-instant) var(--ease-out);
+}
+a.list-row:active,
+button.list-row:active { background: var(--fill-subtle); }
+
+/* ── Badge ────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 1);
+  height: 22px;
+  padding: 0 calc(var(--spacing) * 2.5);
+  border-radius: var(--radius-capsule);
+  font: 600 0.6875rem/1 var(--font-sans);
+  letter-spacing: 0.02em;
+  background: color-mix(in srgb, var(--primary) 13%, transparent);
+  color: var(--primary);
+}
+.badge-success { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); }
+.badge-warning { background: color-mix(in srgb, var(--warning) 16%, transparent); color: var(--warning); }
+.badge-error { background: color-mix(in srgb, var(--destructive) 13%, transparent); color: var(--destructive); }
+.badge-neutral { background: var(--fill-subtle); color: var(--muted-foreground); }
+
+/* ── 减弱动态降级 ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .card-interactive:hover { transform: none; }
+  .segmented label:active { transform: none; }
+  .switch::after { transition-duration: 1ms; }
+}

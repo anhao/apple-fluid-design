@@ -1,0 +1,90 @@
+{
+  "brandName": "Fluid Glass",
+  "brandSlug": "apple-fluid",
+  "productType": "whole-site web design system",
+  "kitType": "web",
+  "components": [
+    {
+      "slug": "button",
+      "name": "Button",
+      "variantCount": 8,
+      "category": "actions",
+      "summary": "胶囊按钮，filled/tinted/glass/plain/destructive 五层级；按下即时 scale 反馈。"
+    },
+    {
+      "slug": "field",
+      "name": "Field",
+      "variantCount": 4,
+      "category": "forms",
+      "summary": "填充式输入框，聚焦切实底加 ring；含压图玻璃变体与行内校验。"
+    },
+    {
+      "slug": "switch",
+      "name": "Switch",
+      "variantCount": 2,
+      "category": "forms",
+      "summary": "iOS 式开关，临界阻尼无回弹，按住滑块拉长。"
+    },
+    {
+      "slug": "segmented",
+      "name": "Segmented Control",
+      "variantCount": 1,
+      "category": "forms",
+      "summary": "分段控件，选中项浮起为卡面。"
+    },
+    {
+      "slug": "card",
+      "name": "Card",
+      "variantCount": 3,
+      "category": "surfaces",
+      "summary": "静息耳语级阴影；interactive 悬停浮起；glass 变体压彩色内容。"
+    },
+    {
+      "slug": "navbar",
+      "name": "Navbar",
+      "variantCount": 1,
+      "category": "navigation",
+      "summary": "毛玻璃 chrome 顶栏，内容从下滚过，scroll-edge 渐隐代替分割线。"
+    },
+    {
+      "slug": "sheet",
+      "name": "Sheet",
+      "variantCount": 1,
+      "category": "overlays",
+      "summary": "底部面板：弹簧驱动、1:1 跟手、动量投射 detents、橡皮筋、可中断。"
+    },
+    {
+      "slug": "popover",
+      "name": "Popover",
+      "variantCount": 1,
+      "category": "overlays",
+      "summary": "厚材质菜单，从触发点生长，materialize 出入场。"
+    },
+    {
+      "slug": "list",
+      "name": "Inset List",
+      "variantCount": 2,
+      "category": "data-display",
+      "summary": "成组列表，发丝线分隔，行高 ≥48px。"
+    },
+    {
+      "slug": "badge",
+      "name": "Badge",
+      "variantCount": 5,
+      "category": "data-display",
+      "summary": "半透明胶囊徽标，语义色变体。"
+    }
+  ],
+  "crossComponentPatterns": [
+    "反馈发生在 pointer-down，按下缩放全站统一 --press-scale。",
+    "材质厚度编码层级：chrome 导航 → regular 卡片 → thick 弹层。",
+    "手势驱动的运动一律走 motion.js 弹簧，CSS 过渡只做非手势退化。",
+    "强调色集中在操作与选中态，整页先读作黑白灰。",
+    "三档无障碍降级内建于材质层与 token 层，组件不各自处理。"
+  ],
+  "summary": {
+    "componentCount": 10,
+    "surfaceMood": "translucent, physical, quietly premium",
+    "platformMix": ["web"]
+  }
+}
